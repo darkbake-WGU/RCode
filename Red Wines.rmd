@@ -1,0 +1,338 @@
+Analyzing the Red Wine Data Set by Jon Baker
+========================================================
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+
+#Setting up libraries
+
+library(ggplot2)
+library(knitr)
+library(dplyr)
+library(gridExtra)
+library(GGally)
+
+
+
+```
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+
+setwd('C:/Users/Home/Desktop/Project 4')
+redwine <- read.csv('wineQualityReds.csv')
+
+```
+
+### Introducing the Red Wine Data Set
+
+This data set looks at over 1,000 red wines. It looks like there are 13
+variables to look at, with one of them being a primary key. I notice
+that some variables operate on different orders of magnitude than others.
+
+# Univariate Plots Section
+
+Here are some summaries of the data set's variables.
+
+```{r DataSummaries}
+
+#These are the variables we are working with in the data set
+names(redwine)
+
+#Let's look at some examples of the different variables in action
+str(redwine)
+
+#Let's look at a summary of the different variables!
+
+summary(redwine)
+
+```
+
+Here are some charts looking at all of the variables in the data set.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots}
+
+p1 <- qplot(x = fixed.acidity, data = redwine,
+            xlab = 'Fixed Acidity of Red Wines',
+            ylab = 'Number of Red Wines',
+            color = I('black'), fill = I('#990099'))
+p2 <- qplot(x = volatile.acidity, data = redwine,
+            xlab = 'Volatile Acidity of Red Wines',
+            ylab = 'Number of Red Wines',
+            color = I('black'), fill = I('#990099'))
+p3 <- qplot(x = citric.acid, data = redwine,
+            xlab = 'Amount of Citric Acid in Red Wines',
+            ylab = 'Number of Red Wines',
+            color = I('black'), fill = I('#990099'))
+p4 <- qplot(x = residual.sugar, data = redwine,
+            xlab = 'Residual Sugar in Red Wines',
+            ylab = 'Number of Red Wines',
+            color = I('black'), fill = I('#990099'))
+p5 <- qplot(x = chlorides, data = redwine,
+            xlab = 'Chlorides in Red Wines',
+            ylab = 'Number of Red Wines',
+            color = I('black'), fill = I('#990099'))
+
+p6 <- qplot(x = free.sulfur.dioxide, data = redwine,
+            xlab = 'Free Sulfur Dioxide in Red Wines',
+            ylab = 'Number of Red Wines',
+            color = I('black'), fill = I('#990099'))
+
+p7 <- qplot(x = total.sulfur.dioxide, data = redwine,
+            xlab = 'Total Sulfur Dioxide in Red Wines',
+            ylab = 'Number of Red Wines',
+            color = I('black'), fill = I('#990099'))
+
+p8 <- qplot(x = density, data = redwine,
+            xlab = 'Density of Red Wines',
+            ylab = 'Number of Red Wines',
+            color = I('black'), fill = I('#990099'))
+
+p9 <- qplot(x = pH, data = redwine,
+            xlab = 'pH of Red Wines',
+            ylab = 'Number of Red Wines',
+            color = I('black'), fill = I('#990099'))
+p10 <- qplot(x = sulphates, data = redwine,
+             xlab = 'Sulphates in Red Wines',
+             ylab = 'Number of Red Wines',
+             color = I('black'), fill = I('#990099'))
+p11 <- qplot(x = alcohol, data = redwine,
+             xlab = 'Alcohol in Red Wines',
+             ylab = 'Number of Red Wines',
+             color = I('black'), fill = I('#990099'))
+p12 <- qplot(x = quality, data = redwine,
+             xlab = 'Quality of Red Wines',
+             ylab = 'Number of Red Wines',
+             color = I('black'), fill = I('#990099'))
+
+
+grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12, ncol=5)
+
+```
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+
+This data set is structured with 11 numeric variables and 1 categorical
+variable (quality). There is also the primary key in a column by itself. To be
+more specific, all of the variables except for quality are numeric and real.
+However, the variable for quality is numeric and an integer. I will have to
+transform it, but it should work very well.
+
+### What is/are the main feature(s) of interest in your dataset?
+
+The categorical variable called quality could be useful when doing a
+multivariate analysis. Density, pH, sulphites and alcohol content are tracked.
+In addition, fixed acidity, volatile acidity, citric acid, residual sugar,
+chlorides, free sulfur dioxide and total sulfur dioxide are tracked.
+
+I am not sure what others would be interested in, but I am interested in how 
+acids affect things like pH and density. I already know that more acid means
+less pH, but I would like to see it in action with the data. I want to check and
+see if more citric acid makes more fixed acidity.
+
+Others might be interested in how alcohol content, sulfates, residual sugars, 
+citric acid and even pH affect the quality rating. So we will look into that as
+well.
+
+
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+
+I really like how quality is an integer. This makes it a candidate for helping
+out with multivariate analysis.
+
+### Did you create any new variables from existing variables in the dataset?
+
+I did not create any new variables.
+
+### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
+
+Two of the variables, residual sugar and chlorides, have long tails on the right
+and I would prefer to chop those off if I were to use those graphs in a
+presentation.
+
+
+# Bivariate Plots Section
+
+### These are the correlation values of that data. From this, there are a few relationships we can look into.
+
+```{r echo=FALSE, Bivariate_Plots}
+
+cor(redwine)
+
+```
+
+### Bivarate Plots
+
+```{r echo=FALSE, Bivariate_Plots2}
+
+#redwine$fixed.acidity <- factor(redwine$fixed.acidity)
+#redwine$citric.acid <- factor(redwine$citric.acid)
+
+ggplot(redwine, aes(redwine, x=fixed.acidity, y = citric.acid)) +
+         geom_point()
+
+redwine$density = factor(redwine$density)
+
+ggplot(redwine, aes(x= fixed.acidity, y = density)) +
+         geom_point()
+
+ggplot(redwine, aes(x = alcohol, y = quality)) +
+        geom_point()
+
+ggplot(redwine, aes(x = residual.sugar, y = quality)) +
+        geom_point()
+
+ggplot(redwine, aes(x = citric.acid, y = quality)) +
+        geom_point()
+
+
+```
+
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+
+I showed a scatterplot of fixed acidity vs. citric acid to see if they were 
+correlated, and they were, in a positive manner. Similarly, fixed acidity was 
+positively correlated with density. 
+
+These were scientific experiments to see if increasing citric acid increased
+fixed acidity. I made the hypothesis that it would. In addition, I wanted to 
+see if acids were denser than neutral substances, in general.
+
+I noticed that pH tends to lower the more acids are added, which makes sense.
+
+I did not see many patterns in the sulfates, residual sugars, pH and citric acid
+vs. quality scatterplots.
+
+### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+
+Quality was most highly correlated with sulfates and alcohol content. 
+
+
+### What was the strongest relationship you found?
+
+Fixed Acidity vs. Density was one of the strongest relationships I found, which
+is quite interesting! Could there be something to this?
+
+In addition, there were other high correlations, like sulfates vs. total
+sulfur dioxide and fixed acidity vs. citric acid that were strong. There was
+also a strong relationship between pH and fixed acidity, which makes sense as
+the more acidic something is, the lower its pH, by law.
+
+# Multivariate Plots Section
+
+```{r echo=FALSE, Multivariate_Plots}
+
+redwine2 <- redwine
+
+redwine2$quality <- as.factor(redwine$quality)
+
+ggpairs(data=redwine2, columns = 11:12, mapping = aes(color=quality))
+
+```
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+
+I wanted to try looking at sulfates and alcohol content in relation to quality
+one more time with a multivariate analysis. These two things were the most
+correlated with quality, after all.
+
+In the graphs produced you can look at the alcohol and phosphate distributions 
+for different quality ratings.
+
+The scatterplot featuring sulfates vs. alcohol content is there as well, with
+quality layered on as different colors.
+
+### Were there any interesting or surprising interactions between features?
+
+I was surprised that mid-quality (5) wines were so closely packed around their
+mean sulfate content and alcohol content. I am also surprised that alcohol and
+sulfates are hardly correlated at all! This means that they are separate, 
+independent features that could predict quality of wines in an algorithm.
+
+
+------
+
+# Final Plots and Summary
+
+### Residual Sugar in Red Wines
+```{r echo=FALSE, warning=FALSE, message=FALSE, Plot_One2}
+
+qplot(x = residual.sugar, data = redwine2,
+            xlab = 'Residual Sugar in Red Wines',
+            ylab = 'Number of Red Wines',
+            color = I('black'), fill = I('#990099'),
+            title = "Residual Sugars in Red Wine",
+            xlim = c(0, 8.5))
+
+```
+
+### Description
+
+This plot shows the residual sugars in red wines. IF you wanted to fit in,
+you might make your wine have around 2.539 residual sugars, which is the mean. 
+This particular chart had a long right tail, which I chopped off in order to 
+make the graph more centralized.
+
+### Fixed Acidity vs. Density in Red Wines
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Two2}
+
+ggplot(redwine, aes(x= fixed.acidity, y = density)) +
+         geom_point()
+
+
+```
+
+### Description
+
+This graph shows fixed acidity vs. density. I was interested in seeing if there
+was a relationship, and there was a positive correlation of .668 . I checked out
+another online data set and found out that this was the case there as well.
+
+
+### Alcohol and Sulfates vs. Quality Rating
+
+```{r echo=FALSE, Plot_Three3}
+
+ggpairs(data=redwine2, columns = 11:12, mapping = aes(color=quality),
+        title = "Alcohol and Sulfates vs. Quality Rating")
+
+```
+
+### Description
+
+This graph looks at the relationships between sulfates, alcohol, and quality 
+rating.  We can get a feel for the mean alcohol and sulfate content for each
+quality rating. It looks like the highest quality wines had higher sulfates. The
+same is true for a lesser extent with alcohol content.
+
+The scatterplot looks at sulfates vs. alcohol to see if there was a "sweet spot"
+relationship between the two.
+
+------
+
+# Reflection
+
+I found out that a multivariate analysis was better for exploring the
+relationship between things such as sulfates vs. quality than a scatterplot.
+I could not get a feel for those scatterplots that I made earlier in the
+exploration.
+
+I was personally interested in using this data set to learn a bit about
+chemistry and physics, while I think others might be interested in using it
+to learn what kinds of wines have a high quality rating. So I did a bit of both
+in the exploration.
+
+The first two scatterplots I made, citric acid vs. fixed acidity and fixed
+acidity vs. density went well. In addition, the mass-production of 
+correlation values as well as univariate charts went very well. Those gave
+a decent overview of the data, along with the data summary. I thought the
+multivariate analysis went well, but it is my first time doing one, and I am
+not sure.
+
+I was surprised at the relationship between acidity and density. In the future,
+I would like to do more multivariate analysis with the quality variable.
