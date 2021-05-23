@@ -46,6 +46,8 @@ str(redwine)
 summary(redwine)
 
 ```
+There is a primary key, 11 variables, and 1 quality variable that can be used
+as a categorical variable.
 
 Here are some charts looking at all of the variables in the data set.
 
@@ -109,6 +111,74 @@ grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12, ncol=5)
 
 ```
 
+These visualizations were created in order to get a feel for the variables.
+We can see that the "Quality of Red Wines" chart is based on integers, not real
+numbers. "Fixed Acidity," "Density," "Volatile Acidity" and "pH" have the most
+normal-looking curves out of the bunch. Many of these charts have tails on the
+right, including the "Sulfur Dioxide" charts, "Sulphates" chart, "Alcohol" chart
+and especially the "Residual Sugar" and "Chlorides" charts.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots2}
+
+ggplot(redwine, aes(x = alcohol)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(alcohol)), color = 'red', linetype = 'dashed',
+           size = 1)
+
+
+```
+
+Here is a close-up view of alcohol content. This is an important feature in
+wines. We can see the mean is around 10.5 % or so. It will be interesting
+to look this over in the multivariate analysis, as it is correlated with
+quality.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots3}
+
+ggplot(redwine, aes(x = sulphates)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(sulphates)), color = 'red', linetype = 'dashed',
+           size = 1)
+
+
+```
+
+This is a histogram of sulfate content in red wines. You can see here that the
+mean is around .7 or so. This will also be interesting in the multivariate
+analysis, as it is correlated with quality.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots4}
+
+ggplot(redwine, aes(x = citric.acid)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(citric.acid)), color = 'red', linetype = 'dashed',
+           size = 1)
+
+
+```
+Citric Acid is positively correlated with the quality of red wines. We can see
+here that the mean is around 0.25, and this is not a normal histogram at all,
+but an entirely different shape.
+
+It will be interesting to look at a multivariate analysis of this chart with 
+regards to quality.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots5}
+
+ggplot(redwine, aes(x = volatile.acidity)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(volatile.acidity)), color = 'red', linetype = 'dashed',
+           size = 1)
+
+
+```
+Volatile Acidity is important, as we find out later, because it is negatively
+associated with red wine quality. Here, we can see the mean is around 0.5 .
+
+This looks like a normal curve with a right tail. It will be interesting to look
+at a multivariate analysis of this chart with regards to quality.
+
 # Univariate Analysis
 
 ### What is the structure of your dataset?
@@ -161,6 +231,17 @@ presentation.
 cor(redwine)
 
 ```
+Here, we can see that fixed acidity is negatively correlated with volatile
+acidity and positively correlated with volatile acidity. Acidity in general
+seems to be correlated with density, and also negatively correlated with pH.
+
+What is most correlated with quality? Well, that would be alcohol content,
+citric acid and sulfates. In addition, volatile acidity is associated with
+poor quality.
+
+
+
+
 
 ### Bivarate Plots
 
@@ -169,13 +250,19 @@ cor(redwine)
 #redwine$fixed.acidity <- factor(redwine$fixed.acidity)
 #redwine$citric.acid <- factor(redwine$citric.acid)
 
-ggplot(redwine, aes(redwine, x=fixed.acidity, y = citric.acid)) +
+ggplot(redwine, aes(x =fixed.acidity, y = citric.acid)) +
          geom_point()
 
 redwine$density = factor(redwine$density)
 
-ggplot(redwine, aes(x= fixed.acidity, y = density)) +
+ggplot(redwine, aes(x = fixed.acidity, y = density)) +
          geom_point()
+
+ggplot(redwine, aes(x = fixed.acidity, y = volatile.acidity)) +
+         geom_point()
+
+ggplot(redwine, aes(x = fixed.acidity, y = pH)) +
+  geom_point()
 
 ggplot(redwine, aes(x = alcohol, y = quality)) +
         geom_point()
@@ -188,6 +275,23 @@ ggplot(redwine, aes(x = citric.acid, y = quality)) +
 
 
 ```
+### Descriptions of the scatterplots
+
+It looks like citric acid is associated with fixed acidity, with a correlation
+of .6717 . Fixed acidity is also positively correlated with density, with a 
+correlation value of .6680 . 
+
+What about citric acid vs. volatile acidity? We notice a negative correlation
+here of -.5525, which gives us a clue to the nature of "volatile acidity" - it 
+probably comes from something other than citric acid.
+
+When I mapped variables such as alcohol content, residual sugar, and citric acid 
+vs. quality, I do not know how to read these
+charts. I think there was an issue because quality is an integer. However, we
+will look at these charts again in the section on multivariate analysis.
+
+
+
 
 # Bivariate Analysis
 
@@ -203,8 +307,10 @@ see if acids were denser than neutral substances, in general.
 
 I noticed that pH tends to lower the more acids are added, which makes sense.
 
-I did not see many patterns in the sulfates, residual sugars, pH and citric acid
-vs. quality scatterplots.
+Mean alcohol content seemed to increase as quality increased. Mean residual
+sugar seemed to decrease. It is unclear to me how citric acid affects quality
+from the scatterplot. I will do all three of these again as a multivariate
+analysis.
 
 ### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
 
@@ -232,6 +338,83 @@ redwine2$quality <- as.factor(redwine$quality)
 ggpairs(data=redwine2, columns = 11:12, mapping = aes(color=quality))
 
 ```
+
+### Description
+
+This chart shows a scatterplot of sulfates vs. alcohol content with the
+additional layer of quality added on top. From the alcohol chart in particular,
+we notice that the highest quality wines have a higher alcohol content. For
+sulfates, we notice the same trend - more sulfates means a higher-quality wine.
+
+As far as the correlation goes, for either terrible (3) or amazing (8) wines,
+this is where sulfates were most negatively correlated with alcohol content, 
+with terrible wines having a correlation as small as -.416
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots2}
+
+ggplot(redwine, aes(x = alcohol)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(alcohol)), color = 'red', linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .)
+
+
+```
+
+### Description
+
+Here, we can see that the higher-quality red wines have a higher alcohol
+content.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots3}
+
+ggplot(redwine, aes(x = citric.acid)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept= mean(citric.acid)), color = 'red', linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .)
+
+
+```
+
+### Description
+
+We can see here that a higher mean of citric acid is associated with higher-
+quality red wines.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots4}
+
+ggplot(redwine, aes(x = volatile.acidity)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(volatile.acidity)), color = 'red', linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .)
+
+
+```
+
+### Description
+
+We can see here that volatile acidity is, in general, less in higher-quality
+wines.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots5}
+
+ggplot(redwine, aes(x = residual.sugar)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(residual.sugar)), color = 'red', linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .)
+
+
+```
+
+### Description
+
+We can see here that a higher mean of residual sugar is associated with
+higher-quality red wines.
 
 # Multivariate Analysis
 
