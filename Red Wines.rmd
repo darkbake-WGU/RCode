@@ -144,7 +144,7 @@ geom_vline(aes(xintercept = mean(sulphates)), color = 'red', linetype = 'dashed'
 ```
 
 This is a histogram of sulfate content in red wines. You can see here that the
-mean is around .7 or so. This will also be interesting in the multivariate
+mean is around .7 mg/l or so. This will also be interesting in the multivariate
 analysis, as it is correlated with quality.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots4}
@@ -157,7 +157,7 @@ geom_vline(aes(xintercept = mean(citric.acid)), color = 'red', linetype = 'dashe
 
 ```
 Citric Acid is positively correlated with the quality of red wines. We can see
-here that the mean is around 0.25, and this is not a normal histogram at all,
+here that the mean is around 0.25 g/L, and this is not a normal histogram at all,
 but an entirely different shape.
 
 It will be interesting to look at a multivariate analysis of this chart with 
@@ -174,7 +174,7 @@ geom_vline(aes(xintercept = mean(volatile.acidity)), color = 'red', linetype = '
 
 ```
 Volatile Acidity is important, as we find out later, because it is negatively
-associated with red wine quality. Here, we can see the mean is around 0.5 .
+associated with red wine quality. Here, we can see the mean is around 0.5 g/L.
 
 This looks like a normal curve with a right tail. It will be interesting to look
 at a multivariate analysis of this chart with regards to quality.
@@ -232,12 +232,13 @@ cor(redwine)
 
 ```
 Here, we can see that fixed acidity is negatively correlated with volatile
-acidity and positively correlated with volatile acidity. Acidity in general
+acidity and positively correlated with citric acid. Acidity in general
 seems to be correlated with density, and also negatively correlated with pH.
 
 What is most correlated with quality? Well, that would be alcohol content,
 citric acid and sulfates. In addition, volatile acidity is associated with
-poor quality.
+poor quality. Residual sugars are interesting to glance at for a look at how
+sweetness affects red wine quality.
 
 
 
@@ -265,16 +266,24 @@ ggplot(redwine, aes(x = fixed.acidity, y = pH)) +
   geom_point()
 
 ggplot(redwine, aes(x = alcohol, y = quality)) +
-        geom_point()
+        geom_jitter(width=0, height=0.35)
 
 ggplot(redwine, aes(x = residual.sugar, y = quality)) +
-        geom_point()
+        geom_jitter(width=0, height=0.35)
 
 ggplot(redwine, aes(x = citric.acid, y = quality)) +
-        geom_point()
+        geom_jitter(width=0, height=0.35)
+
+ggplot(redwine, aes(x = sulphates, y = quality)) +
+        geom_jitter(width=0, height=0.35)
+
+ggplot(redwine, aes(x = volatile.acidity, y = quality)) +
+        geom_jitter(width=0, height=0.35)
+
 
 
 ```
+
 ### Descriptions of the scatterplots
 
 It looks like citric acid is associated with fixed acidity, with a correlation
@@ -285,10 +294,7 @@ What about citric acid vs. volatile acidity? We notice a negative correlation
 here of -.5525, which gives us a clue to the nature of "volatile acidity" - it 
 probably comes from something other than citric acid.
 
-When I mapped variables such as alcohol content, residual sugar, and citric acid 
-vs. quality, I do not know how to read these
-charts. I think there was an issue because quality is an integer. However, we
-will look at these charts again in the section on multivariate analysis.
+Keep reading for more information on the charts regarding quality.
 
 
 
@@ -303,18 +309,29 @@ positively correlated with density.
 
 These were scientific experiments to see if increasing citric acid increased
 fixed acidity. I made the hypothesis that it would. In addition, I wanted to 
-see if acids were denser than neutral substances, in general.
+see if acids were denser than neutral substances, in general, and they were.
 
-I noticed that pH tends to lower the more acids are added, which makes sense.
+Interestingly enough, citric acid was negatively correlated with volatile
+acidity.
+
+Volatile acidity is negatively associated with fixed acidity, and I noticed that
+pH tends to lower the more acids are added, which makes sense.
+
+Wine sellers might be interested in the following:
 
 Mean alcohol content seemed to increase as quality increased. Mean residual
-sugar seemed to decrease. It is unclear to me how citric acid affects quality
-from the scatterplot. I will do all three of these again as a multivariate
-analysis.
+sugar seemed to decrease quality. It is unclear to me how citric acid affects 
+quality from the scatterplot, but I can tell that the mean sulfate content of 
+high-quality wines is higher. Finally, higher volatile acidity was associated 
+with lower-quality wines, which was surprising because my friend in the wine
+industry said no one cared about volatile acidity content.
+
+I will do all five of these again as a multivariate analysis.
 
 ### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
 
-Quality was most highly correlated with sulfates and alcohol content. 
+Quality was most highly correlated with sulfates and alcohol content, and most
+negatively associated with volatile acidity.
 
 
 ### What was the strongest relationship you found?
@@ -323,9 +340,9 @@ Fixed Acidity vs. Density was one of the strongest relationships I found, which
 is quite interesting! Could there be something to this?
 
 In addition, there were other high correlations, like sulfates vs. total
-sulfur dioxide and fixed acidity vs. citric acid that were strong. There was
-also a strong relationship between pH and fixed acidity, which makes sense as
-the more acidic something is, the lower its pH, by law.
+sulfur dioxide and fixed acidity vs. citric acid that were strong but expected.
+There was also a strong relationship between pH and fixed acidity, which makes 
+sense as the more acidic something is, the lower its pH, by law.
 
 # Multivariate Plots Section
 
@@ -339,82 +356,168 @@ ggpairs(data=redwine2, columns = 11:12, mapping = aes(color=quality))
 
 ```
 
-### Description
+### Description of Sulphates vs. Alcohol Content with Regards to Quality
 
 This chart shows a scatterplot of sulfates vs. alcohol content with the
 additional layer of quality added on top. From the alcohol chart in particular,
 we notice that the highest quality wines have a higher alcohol content. For
-sulfates, we notice the same trend - more sulfates means a higher-quality wine.
+sulfates, we notice the same trend - more sulfates means a higher-quality red 
+wine.
 
 As far as the correlation goes, for either terrible (3) or amazing (8) wines,
 this is where sulfates were most negatively correlated with alcohol content, 
 with terrible wines having a correlation as small as -.416
 
+This last part seems like something very subtle, but is it usable information
+if I can grasp my head around it?
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots2}
+
+alc_mean <- redwine %>%
+  group_by(quality) %>%
+  summarize(mean_val = mean(alcohol))
 
 ggplot(redwine, aes(x = alcohol)) +
 geom_histogram(bindwith = .25, color = 'black') +
 geom_vline(aes(xintercept = mean(alcohol)), color = 'red', linetype = 'dashed',
            size = 1) +
-  facet_grid(quality ~ .)
-
-
-```
-
-### Description
-
-Here, we can see that the higher-quality red wines have a higher alcohol
-content.
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots3}
-
-ggplot(redwine, aes(x = citric.acid)) +
-geom_histogram(bindwith = .25, color = 'black') +
-geom_vline(aes(xintercept= mean(citric.acid)), color = 'red', linetype = 'dashed',
+  facet_grid(quality ~ .) +
+geom_vline(data = alc_mean, aes(xintercept = mean_val, color=as.factor(quality)), linetype = 'dashed',
            size = 1) +
   facet_grid(quality ~ .)
 
 
 ```
 
-### Description
+### Description of Alcohol Content in Red Wines with Regards to Quality
+
+Here, we can see that the higher-quality red wines have a higher alcohol
+content. On this graph and the ones following, the mean of the entire batch
+will be a red line going down the chart, with the mean lines of each quality
+level also showing. The conclusion here would be to make your wine have as much
+alcohol content as possible for a high rating. The mean alcohol rating of a 
+high-quality red wine is around 12%.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots3}
+
+ca_mean <- redwine %>%
+  group_by(quality) %>%
+  summarize(mean_val = mean(citric.acid))
+
+ggplot(redwine, aes(x = citric.acid)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(citric.acid)), color = 'red', linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .) +
+geom_vline(data = ca_mean, aes(xintercept = mean_val, color=as.factor(quality)), linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .)
+
+
+```
+
+### Description of Citric Acid in Red Wines with Regards to Quality
 
 We can see here that a higher mean of citric acid is associated with higher-
-quality red wines.
+quality red wines. You can see that the mean citric acid of a high-quality wine
+is around .4 g/L.
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots4}
+
+va_mean <- redwine %>%
+  group_by(quality) %>%
+  summarize(mean_val = mean(volatile.acidity))
 
 ggplot(redwine, aes(x = volatile.acidity)) +
 geom_histogram(bindwith = .25, color = 'black') +
 geom_vline(aes(xintercept = mean(volatile.acidity)), color = 'red', linetype = 'dashed',
            size = 1) +
+  facet_grid(quality ~ .) +
+geom_vline(data = va_mean, aes(xintercept = mean_val, color=as.factor(quality)), linetype = 'dashed',
+           size = 1) +
   facet_grid(quality ~ .)
 
 
 ```
 
-### Description
+### Description of Volatile Acidity in Red Wines with Regards to Quality
 
 We can see here that volatile acidity is, in general, less in higher-quality
 wines.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots5}
 
+rs_mean <- redwine %>%
+  group_by(quality) %>%
+  summarize(mean_val = mean(residual.sugar))
+
 ggplot(redwine, aes(x = residual.sugar)) +
 geom_histogram(bindwith = .25, color = 'black') +
 geom_vline(aes(xintercept = mean(residual.sugar)), color = 'red', linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .) +
+geom_vline(data = rs_mean, aes(xintercept = mean_val, color=as.factor(quality)), linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .) +
+  xlim(1.5,3)
+
+
+```
+
+### Description of Residual Sugar in Red Wines with Regards to Quality
+
+We can see here that a higher mean of residual sugar is associated with the
+extremities of wine quality. Sugar content jumps at 7, but goes back down to
+slightly above the mean at quality level 8.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots6}
+
+sul_mean <- redwine %>%
+  group_by(quality) %>%
+  summarize(mean_val = mean(sulphates))
+
+ggplot(redwine, aes(x = sulphates)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(sulphates)), color = 'red', linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .) +
+geom_vline(data = sul_mean, aes(xintercept = mean_val, color=as.factor(quality)), linetype = 'dashed',
            size = 1) +
   facet_grid(quality ~ .)
 
 
 ```
+### Description of Sulfates in Red Wines with Regards to Quality
 
-### Description
+Here, we can see that higher-quality wines tend to have a higher sulfate count.
+In fact, the mean of quality 8 wines is around .75 mg/L.
 
-We can see here that a higher mean of residual sugar is associated with
-higher-quality red wines.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots7}
+
+vola_mean <- redwine %>%
+  group_by(quality) %>%
+  summarize(mean_val = mean(volatile.acidity))
+
+ggplot(redwine, aes(x = volatile.acidity)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(volatile.acidity)), color = 'red', linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .) +
+geom_vline(data = vola_mean, aes(xintercept = mean_val, color=as.factor(quality)), linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .)
+
+
+```
+### Volatile ACidity for Different Qualities of Wine
+
+This chart shows how the mean of volatile acidity for different tiers of wine
+quality goes down the higher one goes, until there is a slight uptick right at
+level 8.
+
 
 # Multivariate Analysis
 
@@ -443,10 +546,11 @@ independent features that could predict quality of wines in an algorithm.
 # Final Plots and Summary
 
 ### Residual Sugar in Red Wines
+
 ```{r echo=FALSE, warning=FALSE, message=FALSE, Plot_One2}
 
 qplot(x = residual.sugar, data = redwine2,
-            xlab = 'Residual Sugar in Red Wines',
+            xlab = 'Residual Sugar in Red Wines (g/L',
             ylab = 'Number of Red Wines',
             color = I('black'), fill = I('#990099'),
             title = "Residual Sugars in Red Wine",
@@ -457,15 +561,17 @@ qplot(x = residual.sugar, data = redwine2,
 ### Description
 
 This plot shows the residual sugars in red wines. IF you wanted to fit in,
-you might make your wine have around 2.539 residual sugars, which is the mean. 
-This particular chart had a long right tail, which I chopped off in order to 
-make the graph more centralized.
+you might make your wine have around 2.539 grams per liter of residual sugars, 
+which is the mean. This particular chart had a long right tail, which I chopped
+off in order to make the graph more centralized.
 
 ### Fixed Acidity vs. Density in Red Wines
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Two2}
 
 ggplot(redwine, aes(x= fixed.acidity, y = density)) +
-         geom_point()
+         geom_point() +
+ggtitle("Fixed Acidity vs. Density in Red Wines")
 
 
 ```
@@ -477,24 +583,34 @@ was a relationship, and there was a positive correlation of .668 . I checked out
 another online data set and found out that this was the case there as well.
 
 
-### Alcohol and Sulfates vs. Quality Rating
+### Volatile ACidity vs. Quality Rating
 
-```{r echo=FALSE, Plot_Three3}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Three3}
 
-ggpairs(data=redwine2, columns = 11:12, mapping = aes(color=quality),
-        title = "Alcohol and Sulfates vs. Quality Rating")
+vola_mean <- redwine %>%
+  group_by(quality) %>%
+  summarize(mean_val = mean(volatile.acidity))
+
+ggplot(redwine, aes(x = volatile.acidity)) +
+geom_histogram(bindwith = .25, color = 'black') +
+geom_vline(aes(xintercept = mean(volatile.acidity)), color = 'red', linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .) +
+geom_vline(data = vola_mean, aes(xintercept = mean_val, color=as.factor(quality)), linetype = 'dashed',
+           size = 1) +
+  facet_grid(quality ~ .) +
+labs(title = "Volatile Acidity vs. Quality Rating in Red Wines") +
+xlab("Volatile Acidity (grams per liter)")
+
 
 ```
 
 ### Description
 
-This graph looks at the relationships between sulfates, alcohol, and quality 
-rating.  We can get a feel for the mean alcohol and sulfate content for each
-quality rating. It looks like the highest quality wines had higher sulfates. The
-same is true for a lesser extent with alcohol content.
-
-The scatterplot looks at sulfates vs. alcohol to see if there was a "sweet spot"
-relationship between the two.
+This graph looks at the relationships between volatile acidity and quality
+rating. Although the wine-industry insider I knew thought that volatile acidity
+did not matter for wine quality, it was the most negatively associated with
+wine quality out of all of the variables explored.
 
 ------
 
@@ -503,7 +619,7 @@ relationship between the two.
 I found out that a multivariate analysis was better for exploring the
 relationship between things such as sulfates vs. quality than a scatterplot.
 I could not get a feel for those scatterplots that I made earlier in the
-exploration.
+exploration. I eventually learned how to use jitter to clear this up a bit.
 
 I was personally interested in using this data set to learn a bit about
 chemistry and physics, while I think others might be interested in using it
@@ -518,4 +634,5 @@ multivariate analysis went well, but it is my first time doing one, and I am
 not sure.
 
 I was surprised at the relationship between acidity and density. In the future,
-I would like to do more multivariate analysis with the quality variable.
+I would like to do more multivariate analysis with the quality variable, and see
+what I can find.
