@@ -125,6 +125,7 @@ geom_histogram(bindwith = .25, color = 'black') +
 geom_vline(aes(xintercept = mean(alcohol)), color = 'red', linetype = 'dashed',
            size = 1)
 
+summary(redwine$alcohol)
 
 ```
 
@@ -140,6 +141,7 @@ geom_histogram(bindwith = .25, color = 'black') +
 geom_vline(aes(xintercept = mean(sulphates)), color = 'red', linetype = 'dashed',
            size = 1)
 
+summary(redwine$sulphates)
 
 ```
 
@@ -154,6 +156,7 @@ geom_histogram(bindwith = .25, color = 'black') +
 geom_vline(aes(xintercept = mean(citric.acid)), color = 'red', linetype = 'dashed',
            size = 1)
 
+summary(redwine$citric.acid)
 
 ```
 Citric Acid is positively correlated with the quality of red wines. We can see
@@ -168,9 +171,11 @@ regards to quality.
 
 ggplot(redwine, aes(x = volatile.acidity)) +
 geom_histogram(bindwith = .25, color = 'black') +
-geom_vline(aes(xintercept = mean(volatile.acidity)), color = 'red', linetype = 'dashed',
+geom_vline(aes(xintercept = mean(volatile.acidity)), color = 'red',
+           linetype = 'dashed',
            size = 1)
 
+summary(redwine$volatile.acidity)
 
 ```
 Volatile Acidity is important, as we find out later, because it is negatively
@@ -248,39 +253,86 @@ sweetness affects red wine quality.
 
 ```{r echo=FALSE, Bivariate_Plots2}
 
-#redwine$fixed.acidity <- factor(redwine$fixed.acidity)
-#redwine$citric.acid <- factor(redwine$citric.acid)
-
 ggplot(redwine, aes(x =fixed.acidity, y = citric.acid)) +
          geom_point()
 
-redwine$density = factor(redwine$density)
+corr(redwine$fixed.acidity, redwine$citric.acid)
+
+```
+
+
+
+```{r echo=FALSE, Bivariate_Plots21}
+
 
 ggplot(redwine, aes(x = fixed.acidity, y = density)) +
          geom_point()
 
+corr(redwine$fixed.acidity, redwine$denisty)
+
+```
+
+```{r echo=FALSE, Bivariate_Plots22}
+
+
 ggplot(redwine, aes(x = fixed.acidity, y = volatile.acidity)) +
          geom_point()
+
+corr(redwine$fixed.acidity, redwine$volatile.acidity)
+
+```
+
+```{r echo=FALSE, Bivariate_Plots23}
 
 ggplot(redwine, aes(x = fixed.acidity, y = pH)) +
   geom_point()
 
+corr(redwine$fixed.acidity, redwine$pH)
+
+```
+
+```{r echo=FALSE, Bivariate_Plots23b}
+
 ggplot(redwine, aes(x = alcohol, y = quality)) +
         geom_jitter(width=0, height=0.35)
+
+corr(redwine$alcohol, redwine$quality)
+
+```
+
+```{r echo=FALSE, Bivariate_Plots23c}
 
 ggplot(redwine, aes(x = residual.sugar, y = quality)) +
         geom_jitter(width=0, height=0.35)
 
+corr(redwine$residual.sugar, redwine$quality)
+
+```
+
+```{r echo=FALSE, Bivariate_Plots24}
+
 ggplot(redwine, aes(x = citric.acid, y = quality)) +
         geom_jitter(width=0, height=0.35)
+
+corr(redwine$citric.acid, redwine$quality)
+
+```
+
+```{r echo=FALSE, Bivariate_Plots25}
 
 ggplot(redwine, aes(x = sulphates, y = quality)) +
         geom_jitter(width=0, height=0.35)
 
+corr(redwine$sulphates, redwine$quality)
+
+```
+
+```{r echo=FALSE, Bivariate_Plots26}
+
 ggplot(redwine, aes(x = volatile.acidity, y = quality)) +
         geom_jitter(width=0, height=0.35)
 
-
+corr(redwine$volatile.acidity, redwine$quality)
 
 ```
 
@@ -295,8 +347,6 @@ here of -.5525, which gives us a clue to the nature of "volatile acidity" - it
 probably comes from something other than citric acid.
 
 Keep reading for more information on the charts regarding quality.
-
-
 
 
 # Bivariate Analysis
@@ -550,7 +600,7 @@ independent features that could predict quality of wines in an algorithm.
 ```{r echo=FALSE, warning=FALSE, message=FALSE, Plot_One2}
 
 qplot(x = residual.sugar, data = redwine2,
-            xlab = 'Residual Sugar in Red Wines (g/L',
+            xlab = 'Residual Sugar in Red Wines (g/L)',
             ylab = 'Number of Red Wines',
             color = I('black'), fill = I('#990099'),
             title = "Residual Sugars in Red Wine",
