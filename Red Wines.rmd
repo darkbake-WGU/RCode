@@ -11,6 +11,8 @@ library(dplyr)
 library(gridExtra)
 library(GGally)
 
+# knitr: Suppress code/messages/warnings 
+knitr::opts_chunk$set( echo=FALSE,warning=FALSE,message=FALSE)
 
 
 ```
@@ -146,7 +148,7 @@ summary(redwine$sulphates)
 ```
 
 This is a histogram of sulfate content in red wines. You can see here that the
-mean is around .7 mg/l or so. This will also be interesting in the multivariate
+mean is around .65 mg/l or so. This will also be interesting in the multivariate
 analysis, as it is correlated with quality.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots4}
@@ -254,87 +256,127 @@ sweetness affects red wine quality.
 ```{r echo=FALSE, Bivariate_Plots2}
 
 ggplot(redwine, aes(x =fixed.acidity, y = citric.acid)) +
-         geom_point()
+      geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  
 
-corr(redwine$fixed.acidity, redwine$citric.acid)
+cor(redwine$fixed.acidity, redwine$citric.acid)
 
 ```
 
-
+Fixed acidity and citric acid are positively correlated. I wanted to see if
+they were related, and they are. It is imagined that citric acid causes
+fixed acidity.
 
 ```{r echo=FALSE, Bivariate_Plots21}
 
 
 ggplot(redwine, aes(x = fixed.acidity, y = density)) +
-         geom_point()
+      geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  
 
-corr(redwine$fixed.acidity, redwine$denisty)
+cor(redwine$fixed.acidity, redwine$density)
 
 ```
+
+Fixed acidity and density were positively correlated, meaning the more acidic
+something is, the denser it is. This was surprising to me! I've never heard of 
+this relationship before, but I noticed it on the correlation master chart
+above.
+
 
 ```{r echo=FALSE, Bivariate_Plots22}
 
 
 ggplot(redwine, aes(x = fixed.acidity, y = volatile.acidity)) +
-         geom_point()
+      geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  
 
-corr(redwine$fixed.acidity, redwine$volatile.acidity)
+cor(redwine$fixed.acidity, redwine$volatile.acidity)
 
 ```
+
+Fixed acidity and volatile acidity were negatively correlated - this means they
+could be opposites of each other! I was interested in their relationship, and
+suspected as much.
 
 ```{r echo=FALSE, Bivariate_Plots23}
 
 ggplot(redwine, aes(x = fixed.acidity, y = pH)) +
-  geom_point()
+      geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  
 
-corr(redwine$fixed.acidity, redwine$pH)
+cor(redwine$fixed.acidity, redwine$pH)
 
 ```
+
+Fixed acidity and pH were negatively correlated... this is because a low pH
+by definition means something that is more acidic. I was interested to see if
+my knowledge of chemistry held true here, and it did.
 
 ```{r echo=FALSE, Bivariate_Plots23b}
 
 ggplot(redwine, aes(x = alcohol, y = quality)) +
         geom_jitter(width=0, height=0.35)
 
-corr(redwine$alcohol, redwine$quality)
+cor(redwine$alcohol, redwine$quality)
 
 ```
+
+The higher the alcohol content, the greater the quality of a red wine tends to
+be. Alcohol content was a prime indicator of quality according to the correlation
+overview.
 
 ```{r echo=FALSE, Bivariate_Plots23c}
 
 ggplot(redwine, aes(x = residual.sugar, y = quality)) +
         geom_jitter(width=0, height=0.35)
 
-corr(redwine$residual.sugar, redwine$quality)
+cor(redwine$residual.sugar, redwine$quality)
 
 ```
+
+Residual sugar and wine quality is hardly correlated at all, but a bit in the 
+positive direction. I was interested in this, because sweetness is a taste
+that everyone can relate to, and does it affect wine quality or not?
 
 ```{r echo=FALSE, Bivariate_Plots24}
 
 ggplot(redwine, aes(x = citric.acid, y = quality)) +
         geom_jitter(width=0, height=0.35)
 
-corr(redwine$citric.acid, redwine$quality)
+cor(redwine$citric.acid, redwine$quality)
 
 ```
+
+Citric acid is correlated with higher-quality red wines. I noticed this on the
+correlation overview and wanted to take a closer look.
 
 ```{r echo=FALSE, Bivariate_Plots25}
 
 ggplot(redwine, aes(x = sulphates, y = quality)) +
         geom_jitter(width=0, height=0.35)
 
-corr(redwine$sulphates, redwine$quality)
+cor(redwine$sulphates, redwine$quality)
 
 ```
+
+More sulfates tend to exist in higher-quality red wines. I noticed this on the
+correlation overview and wanted to take a closer look.
 
 ```{r echo=FALSE, Bivariate_Plots26}
 
 ggplot(redwine, aes(x = volatile.acidity, y = quality)) +
         geom_jitter(width=0, height=0.35)
 
-corr(redwine$volatile.acidity, redwine$quality)
+cor(redwine$volatile.acidity, redwine$quality)
 
 ```
+
+The more volatile acidity a red wine has, the lower its quality rating. I
+noticed this on the correlation overview and wanted to take a closer look. It is
+unique in that it has a high negative correlation value. This could be explained
+because of its negative relationship with citric acid, which has a positive 
+relationship with quality.
 
 ### Descriptions of the scatterplots
 
@@ -562,7 +604,7 @@ geom_vline(data = vola_mean, aes(xintercept = mean_val, color=as.factor(quality)
 
 
 ```
-### Volatile ACidity for Different Qualities of Wine
+### Volatile Acidity for Different Qualities of Wine
 
 This chart shows how the mean of volatile acidity for different tiers of wine
 quality goes down the higher one goes, until there is a slight uptick right at
@@ -633,7 +675,7 @@ was a relationship, and there was a positive correlation of .668 . I checked out
 another online data set and found out that this was the case there as well.
 
 
-### Volatile ACidity vs. Quality Rating
+### Volatile Acidity vs. Quality Rating
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Three3}
 
@@ -685,4 +727,6 @@ not sure.
 
 I was surprised at the relationship between acidity and density. In the future,
 I would like to do more multivariate analysis with the quality variable, and see
-what I can find.
+what I can find. As far as the wine industry goes, one surprising find was that
+volatile acidity was so negatively correlated with red wine quality! No one in 
+the industry I talked to seemed to know that.
